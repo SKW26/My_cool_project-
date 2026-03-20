@@ -1,0 +1,904 @@
+{\rtf1\ansi\ansicpg1252\cocoartf2868
+\cocoatextscaling0\cocoaplatform0{\fonttbl\f0\fswiss\fcharset0 Helvetica;}
+{\colortbl;\red255\green255\blue255;}
+{\*\expandedcolortbl;;}
+\paperw11900\paperh16840\margl1440\margr1440\vieww11520\viewh8400\viewkind0
+\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural\partightenfactor0
+
+\f0\fs24 \cf0 <!DOCTYPE html>\
+\
+<html lang="en">\
+<head>\
+<meta charset="UTF-8">\
+<meta name="viewport" content="width=device-width, initial-scale=1.0">\
+<title>CompTIA A+ Core 1 \'97 AI Practice Engine</title>\
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">\
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>\
+<style>\
+:root \{\
+  --bg: #07090f;\
+  --surface: #0e1118;\
+  --card: #131720;\
+  --card2: #181e2a;\
+  --border: #1f2840;\
+  --accent: #4f8ef7;\
+  --gold: #f0b429;\
+  --success: #34d399;\
+  --danger: #f87171;\
+  --text: #e2e8f8;\
+  --muted: #4a5a7a;\
+  --mono: 'Fira Code', monospace;\
+  --sans: 'Syne', sans-serif;\
+\}\
+* \{ box-sizing: border-box; margin: 0; padding: 0; \}\
+body \{\
+  background: var(--bg);\
+  color: var(--text);\
+  font-family: var(--sans);\
+  min-height: 100vh;\
+  padding-bottom: 80px;\
+  background-image:\
+    radial-gradient(ellipse 55% 35% at 50% -5%, rgba(79,142,247,0.13) 0%, transparent 65%),\
+    radial-gradient(ellipse 30% 25% at 95% 60%, rgba(240,180,41,0.05) 0%, transparent 55%);\
+\}\
+\
+/* NAV */\
+nav \{\
+display: flex; align-items: center; justify-content: space-between;\
+padding: 14px 28px; border-bottom: 1px solid var(\'96border);\
+background: rgba(7,9,15,0.92); backdrop-filter: blur(12px);\
+position: sticky; top: 0; z-index: 200;\
+\}\
+.nav-logo \{ display: flex; align-items: center; gap: 12px; \}\
+.logo-badge \{\
+background: var(\'96accent); color: #fff;\
+font-family: var(\'96mono); font-size: 11px; font-weight: 500;\
+padding: 5px 10px; border-radius: 4px; letter-spacing: 0.04em;\
+\}\
+.nav-title  \{ font-size: 15px; font-weight: 700; color: #fff; letter-spacing: -0.02em; \}\
+.nav-sub    \{ font-family: var(\'96mono); font-size: 10px; color: var(\'96muted); letter-spacing: 0.06em; \}\
+.score-pill \{\
+background: var(\'96card2); border: 1px solid var(\'96border);\
+padding: 5px 14px; border-radius: 20px;\
+font-family: var(\'96mono); font-size: 12px; color: var(\'96muted); display: none;\
+\}\
+.score-pill span \{ color: var(\'96accent); \}\
+\
+/* SPLASH */\
+#splash \{\
+max-width: 640px; margin: 80px auto;\
+text-align: center; padding: 0 20px;\
+\}\
+.splash-icon \{ font-size: 52px; margin-bottom: 20px; display: block; \}\
+.splash-title \{\
+font-size: 44px; font-weight: 800; color: #fff;\
+letter-spacing: -0.04em; line-height: 1.1; margin-bottom: 14px;\
+\}\
+.splash-title span \{ color: var(\'96accent); \}\
+.splash-desc \{ font-size: 15px; color: var(\'96muted); line-height: 1.7; margin-bottom: 32px; \}\
+.feature-grid \{ display: grid; grid-template-columns: repeat(3,1fr); gap: 12px; margin-bottom: 36px; \}\
+.feature-item \{\
+background: var(\'96card); border: 1px solid var(\'96border);\
+border-radius: 10px; padding: 18px 12px;\
+font-size: 12px; color: var(\'96muted); line-height: 1.5;\
+\}\
+.feature-item .fi \{ font-size: 24px; margin-bottom: 8px; display: block; \}\
+.feature-item strong \{ display: block; color: var(\'96text); font-size: 13px; margin-bottom: 4px; \}\
+.start-btn \{\
+background: var(\'96accent); color: #fff; border: none;\
+padding: 16px 52px; border-radius: 8px; font-family: var(\'96sans);\
+font-size: 16px; font-weight: 700; cursor: pointer;\
+transition: all 0.2s; box-shadow: 0 0 32px rgba(79,142,247,0.3);\
+\}\
+.start-btn:hover \{ transform: translateY(-2px); box-shadow: 0 0 44px rgba(79,142,247,0.45); \}\
+\
+/* LOADING */\
+#loading \{\
+display: none; max-width: 480px; margin: 110px auto;\
+text-align: center; padding: 0 20px;\
+\}\
+.loader-ring \{\
+width: 56px; height: 56px;\
+border: 3px solid var(\'96border); border-top-color: var(\'96accent);\
+border-radius: 50%; animation: spin 0.85s linear infinite;\
+margin: 0 auto 22px;\
+\}\
+@keyframes spin \{ to \{ transform: rotate(360deg); \} \}\
+.loading-title \{ font-size: 20px; font-weight: 700; color: #fff; margin-bottom: 8px; \}\
+.loading-sub \{ font-family: var(\'96mono); font-size: 12px; color: var(\'96muted); letter-spacing: 0.06em; \}\
+.dots::after \{ content: \'91\'92; animation: dotanim 1.5s steps(4,end) infinite; \}\
+@keyframes dotanim \{ 0%\{content:\'92\'92\} 25%\{content:\'92.\'92\} 50%\{content:\'92..\'92\} 75%\{content:\'92\'85\'92\} 100%\{content:\'92\'92\} \}\
+\
+/* PROGRESS */\
+#progressWrap \{\
+display: none; max-width: 840px; margin: 22px auto 0; padding: 0 20px;\
+\}\
+.prog-row \{ display: flex; align-items: center; gap: 14px; margin-bottom: 6px; \}\
+.prog-track \{ flex:1; height: 4px; background: var(\'96border); border-radius: 2px; overflow: hidden; \}\
+.prog-fill \{\
+height: 100%; width: 0%;\
+background: linear-gradient(90deg, var(\'96accent), var(\'96gold));\
+border-radius: 2px; transition: width 0.5s ease;\
+\}\
+.prog-label \{ font-family: var(\'96mono); font-size: 11px; color: var(\'96muted); white-space: nowrap; \}\
+\
+/* QUIZ */\
+#quiz \{ display: none; max-width: 840px; margin: 0 auto; padding: 22px 20px; \}\
+\
+.question-card \{\
+background: var(\'96card); border: 1px solid var(\'96border);\
+border-radius: 12px; overflow: hidden;\
+margin-bottom: 18px; transition: border-color 0.3s;\
+animation: fadeUp 0.3s ease both;\
+\}\
+@keyframes fadeUp \{ from\{opacity:0;transform:translateY(12px)\} to\{opacity:1;transform:translateY(0)\} \}\
+.question-card:nth-child(2)\{animation-delay:.04s\} .question-card:nth-child(3)\{animation-delay:.08s\}\
+.question-card:nth-child(4)\{animation-delay:.12s\} .question-card:nth-child(5)\{animation-delay:.16s\}\
+.question-card:nth-child(6)\{animation-delay:.20s\} .question-card:nth-child(7)\{animation-delay:.24s\}\
+.question-card.correct \{ border-color: var(\'96success); \}\
+.question-card.wrong   \{ border-color: var(\'96danger);  \}\
+\
+.q-head \{\
+display: flex; align-items: center; gap: 10px;\
+padding: 11px 18px; background: var(\'96surface);\
+border-bottom: 1px solid var(\'96border);\
+\}\
+.q-num   \{ font-family: var(\'96mono); font-size: 11px; color: var(\'96accent); font-weight: 500; letter-spacing: 0.08em; \}\
+.q-domain \{\
+font-family: var(\'96mono); font-size: 10px; color: var(\'96muted);\
+background: var(\'96card2); border: 1px solid var(\'96border);\
+padding: 2px 8px; border-radius: 3px; letter-spacing: 0.06em;\
+\}\
+.q-icon \{ margin-left: auto; font-size: 14px; opacity: 0; transition: opacity 0.3s; font-weight: 700; \}\
+.correct .q-icon \{ opacity:1; color: var(\'96success); \}\
+.wrong   .q-icon \{ opacity:1; color: var(\'96danger);  \}\
+\
+.q-body \{ padding: 20px; \}\
+.q-text \{ font-size: 15px; font-weight: 600; color: #fff; line-height: 1.65; margin-bottom: 16px; \}\
+\
+.options \{ display: flex; flex-direction: column; gap: 8px; \}\
+.opt-btn \{\
+display: flex; align-items: flex-start; gap: 12px;\
+padding: 11px 15px;\
+background: rgba(255,255,255,0.025); border: 1px solid var(\'96border);\
+border-radius: 6px; cursor: pointer; width: 100%;\
+font-family: var(\'96sans); text-align: left;\
+color: var(\'96text); transition: all 0.15s;\
+\}\
+.opt-btn:hover:not(:disabled) \{ background: rgba(79,142,247,0.07); border-color: rgba(79,142,247,0.4); \}\
+.opt-btn:disabled \{ cursor: default; \}\
+.opt-letter \{ font-family: var(\'96mono); font-size: 10px; color: var(\'96muted); min-width: 16px; padding-top: 3px; flex-shrink: 0; \}\
+.opt-text   \{ font-size: 14px; line-height: 1.5; \}\
+.opt-btn.sel-correct \{ background: rgba(52,211,153,0.1);  border-color: var(\'96success); \}\
+.opt-btn.sel-correct .opt-letter \{ color: var(\'96success); \}\
+.opt-btn.sel-wrong   \{ background: rgba(248,113,113,0.1); border-color: var(\'96danger); \}\
+.opt-btn.sel-wrong   .opt-letter \{ color: var(\'96danger); \}\
+.opt-btn.reveal      \{ background: rgba(52,211,153,0.07); border-color: var(\'96success); \}\
+.opt-btn.reveal      .opt-letter \{ color: var(\'96success); \}\
+\
+/* EXPLANATION */\
+.explanation \{\
+display: none; margin-top: 14px;\
+padding: 16px; background: rgba(79,142,247,0.05);\
+border-left: 3px solid var(\'96accent);\
+border-radius: 0 8px 8px 0;\
+font-size: 13px; line-height: 1.75; color: #8aabcc;\
+\}\
+.explanation.show \{ display: block; \}\
+.exp-label \{\
+font-family: var(\'96mono); font-size: 9px;\
+letter-spacing: 0.14em; color: var(\'96accent);\
+display: block; margin-bottom: 8px;\
+\}\
+.exp-text \{ margin-bottom: 12px; \}\
+\
+/* DEVICE IMAGE */\
+.device-img-wrap \{\
+margin-top: 12px; display: flex; flex-wrap: wrap; gap: 10px;\
+\}\
+.device-img-card \{\
+background: var(\'96card2); border: 1px solid var(\'96border);\
+border-radius: 8px; overflow: hidden; flex: 0 0 auto;\
+max-width: 200px; animation: fadeUp 0.4s ease both;\
+\}\
+.device-img-card img \{\
+width: 100%; height: 130px; object-fit: cover;\
+display: block;\
+\}\
+.device-img-caption \{\
+font-family: var(\'96mono); font-size: 9px; color: var(\'96muted);\
+letter-spacing: 0.06em; padding: 6px 8px; text-align: center;\
+border-top: 1px solid var(\'96border);\
+\}\
+.img-loading \{\
+height: 130px; display: flex; align-items: center; justify-content: center;\
+font-family: var(\'96mono); font-size: 10px; color: var(\'96muted);\
+\}\
+\
+/* RESULTS */\
+#results \{\
+display: none; max-width: 700px;\
+margin: 0 auto; padding: 40px 20px 80px; text-align: center;\
+\}\
+.results-card \{\
+background: var(\'96card); border: 1px solid var(\'96border);\
+border-radius: 14px; padding: 44px 36px; margin-bottom: 20px;\
+\}\
+.results-score \{\
+font-family: var(\'96mono); font-size: 88px; font-weight: 500;\
+color: var(\'96accent); line-height: 1; margin-bottom: 6px;\
+\}\
+.results-label \{ font-family: var(\'96mono); font-size: 11px; color: var(\'96muted); letter-spacing: 0.12em; margin-bottom: 20px; \}\
+.results-bar-wrap \{ height: 6px; background: var(\'96border); border-radius: 3px; overflow: hidden; margin-bottom: 22px; \}\
+.results-bar-fill \{ height: 100%; background: linear-gradient(90deg, var(\'96accent), var(\'96success)); border-radius: 3px; transition: width 1.2s cubic-bezier(.4,0,.2,1); \}\
+.results-verdict \{ font-size: 18px; font-weight: 700; margin-bottom: 10px; \}\
+.results-verdict.pass \{ color: var(\'96success); \}\
+.results-verdict.fail \{ color: var(\'96danger); \}\
+.results-detail \{ font-size: 13px; color: var(\'96muted); margin-bottom: 28px; line-height: 1.6; \}\
+\
+.breakdown-grid \{ display: grid; grid-template-columns: repeat(auto-fill,minmax(150px,1fr)); gap: 10px; margin-top: 20px; text-align: left; \}\
+.bd-item \{ background: var(\'96card2); border: 1px solid var(\'96border); border-radius: 6px; padding: 12px; \}\
+.bd-domain \{ font-family: var(\'96mono); font-size: 9px; color: var(\'96muted); letter-spacing: 0.1em; margin-bottom: 6px; \}\
+.bd-score  \{ font-size: 20px; font-weight: 800; color: #fff; \}\
+.bd-bar    \{ height: 3px; background: var(\'96border); border-radius: 2px; overflow: hidden; margin-top: 6px; \}\
+.bd-bar-fill \{ height: 100%; background: var(\'96accent); border-radius: 2px; \}\
+\
+.results-btns \{ display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; margin-top: 28px; \}\
+.btn-primary \{\
+background: var(\'96accent); color: #fff; border: none;\
+padding: 13px 28px; border-radius: 7px; font-family: var(\'96sans);\
+font-size: 14px; font-weight: 700; cursor: pointer; transition: all 0.2s;\
+display: flex; align-items: center; gap: 8px;\
+\}\
+.btn-primary:hover:not(:disabled) \{ opacity: 0.88; transform: translateY(-1px); \}\
+.btn-primary:disabled \{ opacity: 0.5; cursor: not-allowed; \}\
+.btn-secondary \{\
+background: var(\'96card2); color: var(\'96text); border: 1px solid var(\'96border);\
+padding: 13px 28px; border-radius: 7px; font-family: var(\'96sans);\
+font-size: 14px; font-weight: 600; cursor: pointer; transition: all 0.2s;\
+display: flex; align-items: center; gap: 8px;\
+\}\
+.btn-secondary:hover \{ border-color: var(\'96accent); color: var(\'96accent); \}\
+.pdf-status \{ margin-top: 14px; font-family: var(\'96mono); font-size: 12px; color: var(\'96success); min-height: 20px; \}\
+\
+/* ERROR */\
+#errorMsg \{ display: none; max-width: 500px; margin: 60px auto; text-align: center; padding: 0 20px; \}\
+.error-card \{ background: rgba(248,113,113,0.08); border: 1px solid rgba(248,113,113,0.25); border-radius: 10px; padding: 28px; \}\
+.error-title \{ font-size: 18px; font-weight: 700; color: var(\'96danger); margin-bottom: 10px; \}\
+.error-text  \{ font-size: 13px; color: #9aabb8; line-height: 1.6; margin-bottom: 20px; \}\
+</style>\
+\
+</head>\
+<body>\
+\
+<!-- NAV -->\
+\
+<nav>\
+  <div class="nav-logo">\
+    <div class="logo-badge">A+ CORE 1</div>\
+    <div>\
+      <div class="nav-title">AI Practice Engine</div>\
+      <div class="nav-sub">220-1101 \'b7 DYNAMIC GENERATION + VISUAL AIDS</div>\
+    </div>\
+  </div>\
+  <div class="score-pill" id="navScore">Score: <span id="navScoreVal">0/0</span></div>\
+</nav>\
+\
+<!-- SPLASH -->\
+\
+<div id="splash">\
+  <span class="splash-icon">\uc0\u55357 \u56741 \u65039 </span>\
+  <h1 class="splash-title">CompTIA A+<br><span>Core 1</span> Practice</h1>\
+  <p class="splash-desc">AI-powered exam practice generating 15 fresh questions every session. Explanations include real images of physical devices and tools. Complete all 15 to auto-generate a full PDF study summary.</p>\
+  <div class="feature-grid">\
+    <div class="feature-item">\
+      <span class="fi">\uc0\u55358 \u56598 </span>\
+      <strong>AI Generated</strong>\
+      Unique questions every session, never repeated\
+    </div>\
+    <div class="feature-item">\
+      <span class="fi">\uc0\u55357 \u56764 \u65039 </span>\
+      <strong>Visual Aids</strong>\
+      Real images of devices shown in explanations\
+    </div>\
+    <div class="feature-item">\
+      <span class="fi">\uc0\u55357 \u56516 </span>\
+      <strong>Auto PDF</strong>\
+      Full study summary generated on completion\
+    </div>\
+  </div>\
+  <button class="start-btn" onclick="startQuiz()">Generate 15 Questions \uc0\u8594 </button>\
+</div>\
+\
+<!-- LOADING -->\
+\
+<div id="loading">\
+  <div class="loader-ring"></div>\
+  <div class="loading-title">Generating your questions</div>\
+  <div class="loading-sub">AI is crafting 15 unique Core 1 questions<span class="dots"></span></div>\
+</div>\
+\
+<!-- ERROR -->\
+\
+<div id="errorMsg">\
+  <div class="error-card">\
+    <div class="error-title">\uc0\u9888  Generation Failed</div>\
+    <div class="error-text" id="errorText">Something went wrong. Please try again.</div>\
+    <button class="btn-primary" style="margin:0 auto" onclick="startQuiz()">\uc0\u8634  Try Again</button>\
+  </div>\
+</div>\
+\
+<!-- PROGRESS -->\
+\
+<div id="progressWrap">\
+  <div class="prog-row">\
+    <div class="prog-track"><div class="prog-fill" id="progFill"></div></div>\
+    <div class="prog-label" id="progLabel">0 / 15</div>\
+  </div>\
+</div>\
+\
+<!-- QUIZ -->\
+\
+<div id="quiz"></div>\
+\
+<!-- RESULTS -->\
+\
+<div id="results">\
+  <div class="results-card">\
+    <div class="results-score" id="resScore">0%</div>\
+    <div class="results-label">FINAL SCORE \'97 CORE 1 (220-1101)</div>\
+    <div class="results-bar-wrap"><div class="results-bar-fill" id="resBar" style="width:0%"></div></div>\
+    <div class="results-verdict" id="resVerdict"></div>\
+    <div class="results-detail"  id="resDetail"></div>\
+    <div class="breakdown-grid"  id="breakdown"></div>\
+    <div class="results-btns">\
+      <button class="btn-primary" id="dlBtn" onclick="downloadPDF()">\uc0\u55357 \u56516  Download PDF Summary</button>\
+      <button class="btn-secondary" onclick="startQuiz()">\uc0\u8634  New Questions</button>\
+    </div>\
+    <div class="pdf-status" id="pdfStatus"></div>\
+  </div>\
+</div>\
+\
+<script>\
+// \uc0\u9472 \u9472  State \u9472 \u9472 \u9472 \u9472 \u9472 \u9472 \u9472 \u9472 \u9472 \u9472 \u9472 \u9472 \u9472 \u9472 \u9472 \u9472 \u9472 \u9472 \u9472 \u9472 \u9472 \u9472 \u9472 \u9472 \u9472 \u9472 \u9472 \u9472 \u9472 \u9472 \u9472 \u9472 \u9472 \u9472 \u9472 \u9472 \u9472 \u9472 \u9472 \u9472 \u9472 \u9472 \u9472 \u9472 \u9472 \u9472 \u9472 \u9472 \u9472 \u9472 \u9472 \u9472 \u9472 \
+let questions = [];\
+let answered  = 0;\
+let correct   = 0;\
+let pdfBlob   = null;\
+const LETTERS = ['A','B','C','D'];\
+\
+// \uc0\u9472 \u9472  Visibility helpers \u9472 \u9472 \u9472 \u9472 \u9472 \u9472 \u9472 \u9472 \u9472 \u9472 \u9472 \u9472 \u9472 \u9472 \u9472 \u9472 \u9472 \u9472 \u9472 \u9472 \u9472 \u9472 \u9472 \u9472 \u9472 \u9472 \u9472 \u9472 \u9472 \u9472 \u9472 \u9472 \u9472 \u9472 \u9472 \u9472 \u9472 \u9472 \u9472 \u9472 \
+function hideAll() \{\
+  ['splash','loading','quiz','results','errorMsg','progressWrap']\
+    .forEach(id => \{ const e = document.getElementById(id); if(e) e.style.display='none'; \});\
+\}\
+function show(id, d='block') \{ document.getElementById(id).style.display = d; \}\
+\
+// \uc0\u9472 \u9472  Keywords \u8594  image search queries \u9472 \u9472 \u9472 \u9472 \u9472 \u9472 \u9472 \u9472 \u9472 \u9472 \u9472 \u9472 \u9472 \u9472 \u9472 \u9472 \u9472 \u9472 \u9472 \u9472 \u9472 \u9472 \u9472 \u9472 \u9472 \u9472 \
+const DEVICE_KEYWORDS = \{\
+  // Storage\
+  'sata ssd': 'SATA SSD 2.5 inch drive',\
+  'nvme ssd': 'NVMe M.2 SSD',\
+  'm.2 ssd': 'M.2 NVMe SSD stick',\
+  'hard drive': 'hard disk drive HDD',\
+  'hdd': 'hard disk drive internal',\
+  'ssd': 'solid state drive SSD',\
+  'raid': 'RAID hard drive array server',\
+  'usb drive': 'USB flash drive',\
+  // Memory\
+  'ram': 'DDR4 RAM memory stick',\
+  'dimm': 'DDR4 DIMM RAM module',\
+  'so-dimm': 'SO-DIMM laptop RAM',\
+  'ddr4': 'DDR4 memory module',\
+  // CPU / Cooling\
+  'cpu': 'Intel AMD CPU processor chip',\
+  'processor': 'CPU processor chip socket',\
+  'heatsink': 'CPU heatsink cooler',\
+  'thermal paste': 'thermal paste CPU application',\
+  'cooling fan': 'CPU cooling fan',\
+  // Motherboard / Power\
+  'motherboard': 'desktop motherboard PCIe slots',\
+  'psu': 'PC power supply unit modular',\
+  'power supply': 'power supply unit ATX',\
+  'gpu': 'graphics card GPU PCIe',\
+  'graphics card': 'graphics card GPU',\
+  // Networking\
+  'router': 'home wifi router',\
+  'switch': 'network switch ethernet ports',\
+  'ethernet cable': 'ethernet RJ45 cable',\
+  'rj-45': 'RJ45 ethernet connector',\
+  'rj45': 'RJ45 ethernet connector',\
+  'fiber optic': 'fiber optic cable LC connector',\
+  'cat6': 'Cat6 ethernet cable',\
+  'cat 6': 'Cat6 ethernet cable',\
+  'patch panel': 'network patch panel',\
+  'access point': 'wireless access point wifi',\
+  // Display\
+  'monitor': 'computer monitor display',\
+  'hdmi': 'HDMI cable connector',\
+  'displayport': 'DisplayPort cable connector',\
+  'vga': 'VGA cable connector',\
+  'lcd': 'LCD display panel',\
+  // Ports & Connectors\
+  'usb-c': 'USB-C connector port',\
+  'thunderbolt': 'Thunderbolt USB-C port',\
+  'usb 3': 'USB 3.0 port connector',\
+  // Printers\
+  'laser printer': 'laser printer desktop',\
+  'inkjet printer': 'inkjet printer',\
+  'fuser': 'laser printer fuser assembly',\
+  'toner': 'laser printer toner cartridge',\
+  'print head': 'inkjet printhead',\
+  // Mobile / Laptops\
+  'laptop': 'laptop computer open',\
+  'tablet': 'tablet computer',\
+  'smartphone': 'smartphone android ios',\
+  // Tools\
+  'multimeter': 'digital multimeter tool',\
+  'crimping tool': 'RJ45 crimping tool network',\
+  'cable tester': 'ethernet cable tester',\
+  'loopback plug': 'loopback plug network test',\
+  'anti-static': 'anti-static wrist strap',\
+  'screwdriver': 'precision screwdriver set computer repair',\
+\};\
+\
+function detectDevices(text) \{\
+  const lower = text.toLowerCase();\
+  const found = [];\
+  const seen  = new Set();\
+  for (const [kw, query] of Object.entries(DEVICE_KEYWORDS)) \{\
+    if (lower.includes(kw) && !seen.has(query)) \{\
+      found.push(\{ label: kw, query \});\
+      seen.add(query);\
+      if (found.length >= 2) break; // max 2 images per explanation\
+    \}\
+  \}\
+  return found;\
+\}\
+\
+// \uc0\u9472 \u9472  Fetch image via Unsplash source (no key needed) \u9472 \u9472 \u9472 \u9472 \u9472 \u9472 \u9472 \u9472 \u9472 \u9472 \u9472 \
+// Uses a public image search proxy \'97 Unsplash Source API\
+async function fetchDeviceImage(query) \{\
+  // Use picsum with a seeded keyword via Unsplash Source\
+  const encoded = encodeURIComponent(query);\
+  const url = `https://source.unsplash.com/200x130/?$\{encoded\}`;\
+  return url; // Unsplash Source returns a redirect to a real photo\
+\}\
+\
+// \uc0\u9472 \u9472  Generate questions via Claude API \u9472 \u9472 \u9472 \u9472 \u9472 \u9472 \u9472 \u9472 \u9472 \u9472 \u9472 \u9472 \u9472 \u9472 \u9472 \u9472 \u9472 \u9472 \u9472 \u9472 \u9472 \u9472 \u9472 \u9472 \u9472 \
+async function generateQuestions() \{\
+  const systemPrompt = `You are a CompTIA A+ exam question writer for Core 1 (220-1101). \
+Return ONLY valid JSON \'97 no markdown, no extra text, no code fences.`;\
+\
+  const userPrompt = `Generate exactly 15 unique multiple-choice practice questions for CompTIA A+ Core 1 (220-1101).\
+\
+Cover these domains:\
+- Mobile Devices (2 questions)\
+- Networking (4 questions)\
+- Hardware (5 questions)\
+- Virtualization and Cloud Computing (2 questions)\
+- Hardware and Network Troubleshooting (2 questions)\
+\
+Rules:\
+- Each question has exactly 4 options labeled A, B, C, D\
+- Only one correct answer (0-indexed: 0=A, 1=B, 2=C, 3=D)\
+- Vary difficulty: mix easy, medium, hard\
+- Cover diverse subtopics: cables, RAM types, storage interfaces, CPUs, PSU, RAID, cooling, printers, wireless, TCP/IP, ports, cloud models, virtualization, troubleshooting methodology\
+- Explanations must be 3-5 sentences and mention the specific physical device or component name where applicable\
+- NEVER repeat questions from previous sessions\
+\
+Return this exact JSON structure:\
+\{\
+  "questions": [\
+    \{\
+      "domain": "HARDWARE",\
+      "question": "Question text here?",\
+      "options": ["Option A text", "Option B text", "Option C text", "Option D text"],\
+      "answer": 0,\
+      "explanation": "Detailed explanation here mentioning the specific component or device name."\
+    \}\
+  ]\
+\}`;\
+\
+  const response = await fetch('https://api.anthropic.com/v1/messages', \{\
+    method: 'POST',\
+    headers: \{ 'Content-Type': 'application/json' \},\
+    body: JSON.stringify(\{\
+      model: 'claude-sonnet-4-20250514',\
+      max_tokens: 4000,\
+      system: systemPrompt,\
+      messages: [\{ role: 'user', content: userPrompt \}]\
+    \})\
+  \});\
+\
+  if (!response.ok) throw new Error(`API error: $\{response.status\}`);\
+  const data = await response.json();\
+  const raw  = data.content.filter(b => b.type === 'text').map(b => b.text).join('');\
+  const clean = raw.replace(/```json|```/gi, '').trim();\
+  const parsed = JSON.parse(clean);\
+  return parsed.questions;\
+\}\
+\
+// \uc0\u9472 \u9472  Start quiz \u9472 \u9472 \u9472 \u9472 \u9472 \u9472 \u9472 \u9472 \u9472 \u9472 \u9472 \u9472 \u9472 \u9472 \u9472 \u9472 \u9472 \u9472 \u9472 \u9472 \u9472 \u9472 \u9472 \u9472 \u9472 \u9472 \u9472 \u9472 \u9472 \u9472 \u9472 \u9472 \u9472 \u9472 \u9472 \u9472 \u9472 \u9472 \u9472 \u9472 \u9472 \u9472 \u9472 \u9472 \u9472 \u9472 \u9472 \u9472 \
+async function startQuiz() \{\
+  questions = []; answered = 0; correct = 0; pdfBlob = null;\
+  document.getElementById('quiz').innerHTML = '';\
+  document.getElementById('navScore').style.display = 'none';\
+  document.getElementById('progFill').style.width = '0%';\
+  document.getElementById('progLabel').textContent = '0 / 15';\
+  document.getElementById('pdfStatus').textContent = '';\
+  document.getElementById('dlBtn').disabled = false;\
+\
+  hideAll();\
+  show('loading', 'flex');\
+\
+  try \{\
+    questions = await generateQuestions();\
+    if (!questions || questions.length < 5) throw new Error('Not enough questions returned');\
+    hideAll();\
+    show('progressWrap');\
+    show('quiz');\
+    document.getElementById('navScore').style.display = 'block';\
+    renderQuiz();\
+  \} catch(err) \{\
+    hideAll();\
+    show('errorMsg', 'flex');\
+    document.getElementById('errorText').textContent = err.message || 'Generation failed. Please try again.';\
+  \}\
+\}\
+\
+// \uc0\u9472 \u9472  Render all question cards \u9472 \u9472 \u9472 \u9472 \u9472 \u9472 \u9472 \u9472 \u9472 \u9472 \u9472 \u9472 \u9472 \u9472 \u9472 \u9472 \u9472 \u9472 \u9472 \u9472 \u9472 \u9472 \u9472 \u9472 \u9472 \u9472 \u9472 \u9472 \u9472 \u9472 \u9472 \u9472 \u9472 \
+function renderQuiz() \{\
+  const container = document.getElementById('quiz');\
+  container.innerHTML = '';\
+\
+  questions.forEach((q, i) => \{\
+    const card = document.createElement('div');\
+    card.className = 'question-card';\
+    card.id = `card-$\{i\}`;\
+\
+    const opts = q.options.map((o, j) => `\
+      <button class="opt-btn" onclick="pick($\{i\},$\{j\})" id="opt-$\{i\}-$\{j\}">\
+        <span class="opt-letter">$\{LETTERS[j]\}.</span>\
+        <span class="opt-text">$\{o\}</span>\
+      </button>`).join('');\
+\
+    card.innerHTML = `\
+      <div class="q-head">\
+        <span class="q-num">Q$\{String(i+1).padStart(2,'0')\}</span>\
+        <span class="q-domain">$\{q.domain\}</span>\
+        <span class="q-icon" id="icon-$\{i\}"></span>\
+      </div>\
+      <div class="q-body">\
+        <div class="q-text">$\{q.question\}</div>\
+        <div class="options">$\{opts\}</div>\
+        <div class="explanation" id="exp-$\{i\}">\
+          <span class="exp-label">EXPLANATION</span>\
+          <div class="exp-text" id="exptext-$\{i\}">$\{q.explanation\}</div>\
+          <div class="device-img-wrap" id="imgs-$\{i\}"></div>\
+        </div>\
+      </div>`;\
+    container.appendChild(card);\
+  \});\
+\}\
+\
+// \uc0\u9472 \u9472  Handle answer pick \u9472 \u9472 \u9472 \u9472 \u9472 \u9472 \u9472 \u9472 \u9472 \u9472 \u9472 \u9472 \u9472 \u9472 \u9472 \u9472 \u9472 \u9472 \u9472 \u9472 \u9472 \u9472 \u9472 \u9472 \u9472 \u9472 \u9472 \u9472 \u9472 \u9472 \u9472 \u9472 \u9472 \u9472 \u9472 \u9472 \u9472 \u9472 \u9472 \u9472 \
+async function pick(qi, oi) \{\
+  const card = document.getElementById(`card-$\{qi\}`);\
+  if (card.dataset.answered) return;\
+  card.dataset.answered = '1';\
+\
+  const q = questions[qi];\
+  const isCorrect = oi === q.answer;\
+  if (isCorrect) correct++;\
+  answered++;\
+\
+  // Style options\
+  q.options.forEach((_, j) => \{\
+    const btn = document.getElementById(`opt-$\{qi\}-$\{j\}`);\
+    btn.disabled = true;\
+    if (j === q.answer && j === oi) btn.classList.add('sel-correct');\
+    else if (j === oi && !isCorrect)  btn.classList.add('sel-wrong');\
+    else if (j === q.answer)          btn.classList.add('reveal');\
+  \});\
+\
+  card.classList.add(isCorrect ? 'correct' : 'wrong');\
+  const icon = document.getElementById(`icon-$\{qi\}`);\
+  icon.textContent = isCorrect ? '\uc0\u10003 ' : '\u10007 ';\
+\
+  // Show explanation\
+  const expEl = document.getElementById(`exp-$\{qi\}`);\
+  expEl.classList.add('show');\
+\
+  // Update nav score\
+  document.getElementById('navScoreVal').textContent = `$\{correct\}/$\{answered\}`;\
+\
+  // Update progress\
+  updateProgress();\
+\
+  // Load device images in explanation\
+  loadDeviceImages(qi, q.explanation);\
+\
+  // Check if done\
+  if (answered === questions.length) \{\
+    setTimeout(showResults, 600);\
+  \}\
+\}\
+\
+// \uc0\u9472 \u9472  Load device images \u9472 \u9472 \u9472 \u9472 \u9472 \u9472 \u9472 \u9472 \u9472 \u9472 \u9472 \u9472 \u9472 \u9472 \u9472 \u9472 \u9472 \u9472 \u9472 \u9472 \u9472 \u9472 \u9472 \u9472 \u9472 \u9472 \u9472 \u9472 \u9472 \u9472 \u9472 \u9472 \u9472 \u9472 \u9472 \u9472 \u9472 \u9472 \u9472 \u9472 \
+async function loadDeviceImages(qi, explanation) \{\
+  const devices = detectDevices(explanation);\
+  if (!devices.length) return;\
+\
+  const wrap = document.getElementById(`imgs-$\{qi\}`);\
+\
+  for (const dev of devices) \{\
+    const imgCard = document.createElement('div');\
+    imgCard.className = 'device-img-card';\
+    imgCard.innerHTML = `<div class="img-loading">loading image\'85</div>`;\
+    wrap.appendChild(imgCard);\
+\
+    try \{\
+      const url = await fetchDeviceImage(dev.query);\
+      imgCard.innerHTML = `\
+        <img src="$\{url\}" alt="$\{dev.label\}"\
+             onerror="this.parentElement.style.display='none'"\
+             loading="lazy">\
+        <div class="device-img-caption">$\{dev.label.toUpperCase()\}</div>`;\
+    \} catch(e) \{\
+      imgCard.style.display = 'none';\
+    \}\
+  \}\
+\}\
+\
+// \uc0\u9472 \u9472  Progress bar \u9472 \u9472 \u9472 \u9472 \u9472 \u9472 \u9472 \u9472 \u9472 \u9472 \u9472 \u9472 \u9472 \u9472 \u9472 \u9472 \u9472 \u9472 \u9472 \u9472 \u9472 \u9472 \u9472 \u9472 \u9472 \u9472 \u9472 \u9472 \u9472 \u9472 \u9472 \u9472 \u9472 \u9472 \u9472 \u9472 \u9472 \u9472 \u9472 \u9472 \u9472 \u9472 \u9472 \u9472 \u9472 \u9472 \
+function updateProgress() \{\
+  const pct = Math.round((answered / questions.length) * 100);\
+  document.getElementById('progFill').style.width   = pct + '%';\
+  document.getElementById('progLabel').textContent  = `$\{answered\} / $\{questions.length\}`;\
+\}\
+\
+// \uc0\u9472 \u9472  Show results \u9472 \u9472 \u9472 \u9472 \u9472 \u9472 \u9472 \u9472 \u9472 \u9472 \u9472 \u9472 \u9472 \u9472 \u9472 \u9472 \u9472 \u9472 \u9472 \u9472 \u9472 \u9472 \u9472 \u9472 \u9472 \u9472 \u9472 \u9472 \u9472 \u9472 \u9472 \u9472 \u9472 \u9472 \u9472 \u9472 \u9472 \u9472 \u9472 \u9472 \u9472 \u9472 \u9472 \u9472 \u9472 \u9472 \
+function showResults() \{\
+  const pct = Math.round((correct / questions.length) * 100);\
+  hideAll();\
+  show('results');\
+\
+  document.getElementById('resScore').textContent = pct + '%';\
+  setTimeout(() => \{ document.getElementById('resBar').style.width = pct + '%'; \}, 100);\
+\
+  const verdict = document.getElementById('resVerdict');\
+  if (pct >= 70) \{\
+    verdict.textContent = '\uc0\u10003  PASS \'97 Well done!';\
+    verdict.className   = 'results-verdict pass';\
+  \} else \{\
+    verdict.textContent = '\uc0\u10007  NOT PASSING \'97 Keep studying';\
+    verdict.className   = 'results-verdict fail';\
+  \}\
+  document.getElementById('resDetail').textContent =\
+    `$\{correct\} correct out of $\{questions.length\} questions. Passing score is 70% ($\{Math.ceil(questions.length*0.7)\}/$\{questions.length\}).`;\
+\
+  // Domain breakdown\
+  buildBreakdown();\
+\
+  // Auto-build PDF\
+  document.getElementById('pdfStatus').textContent = '\uc0\u9203  Building PDF summary\'85';\
+  setTimeout(() => \{\
+    buildPDF(pct);\
+    document.getElementById('pdfStatus').textContent = '\uc0\u10003  PDF ready \'97 click Download PDF Summary';\
+  \}, 800);\
+\}\
+\
+// \uc0\u9472 \u9472  Domain breakdown \u9472 \u9472 \u9472 \u9472 \u9472 \u9472 \u9472 \u9472 \u9472 \u9472 \u9472 \u9472 \u9472 \u9472 \u9472 \u9472 \u9472 \u9472 \u9472 \u9472 \u9472 \u9472 \u9472 \u9472 \u9472 \u9472 \u9472 \u9472 \u9472 \u9472 \u9472 \u9472 \u9472 \u9472 \u9472 \u9472 \u9472 \u9472 \u9472 \u9472 \u9472 \u9472 \
+function buildBreakdown() \{\
+  const domainMap = \{\};\
+  questions.forEach((q, i) => \{\
+    const d = q.domain;\
+    if (!domainMap[d]) domainMap[d] = \{ total: 0, correct: 0 \};\
+    domainMap[d].total++;\
+    const card = document.getElementById(`card-$\{i\}`);\
+    if (card && card.classList.contains('correct')) domainMap[d].correct++;\
+  \});\
+\
+  const grid = document.getElementById('breakdown');\
+  grid.innerHTML = '';\
+  for (const [domain, stats] of Object.entries(domainMap)) \{\
+    const pct = Math.round((stats.correct / stats.total) * 100);\
+    const item = document.createElement('div');\
+    item.className = 'bd-item';\
+    item.innerHTML = `\
+      <div class="bd-domain">$\{domain\}</div>\
+      <div class="bd-score">$\{stats.correct\}/$\{stats.total\}</div>\
+      <div class="bd-bar"><div class="bd-bar-fill" style="width:$\{pct\}%"></div></div>`;\
+    grid.appendChild(item);\
+  \}\
+\}\
+\
+// \uc0\u9472 \u9472  Build PDF \u9472 \u9472 \u9472 \u9472 \u9472 \u9472 \u9472 \u9472 \u9472 \u9472 \u9472 \u9472 \u9472 \u9472 \u9472 \u9472 \u9472 \u9472 \u9472 \u9472 \u9472 \u9472 \u9472 \u9472 \u9472 \u9472 \u9472 \u9472 \u9472 \u9472 \u9472 \u9472 \u9472 \u9472 \u9472 \u9472 \u9472 \u9472 \u9472 \u9472 \u9472 \u9472 \u9472 \u9472 \u9472 \u9472 \u9472 \u9472 \u9472 \
+function buildPDF(scorePct) \{\
+  const \{ jsPDF \} = window.jspdf;\
+  const doc = new jsPDF(\{ orientation: 'portrait', unit: 'mm', format: 'a4' \});\
+  const W = 210, margin = 18, contentW = W - margin * 2;\
+  let y = 0;\
+\
+  const addPage = () => \{ doc.addPage(); y = 20; \};\
+  const checkY = (need) => \{ if (y + need > 275) addPage(); \};\
+\
+  const txt = (text, x, yy, opts=\{\}) => \{\
+    doc.setFontSize(opts.size||10);\
+    doc.setFont('helvetica', opts.style||'normal');\
+    doc.setTextColor(...(opts.color||[30,30,50]));\
+    const lines = doc.splitTextToSize(String(text), opts.maxW || contentW);\
+    doc.text(lines, x, yy);\
+    return lines.length * ((opts.size||10) * 0.4 + 1.2);\
+  \};\
+\
+  // \uc0\u9472 \u9472  Cover \u9472 \u9472 \
+  doc.setFillColor(7, 9, 15);\
+  doc.rect(0, 0, W, 297, 'F');\
+  // accent bar\
+  doc.setFillColor(79, 142, 247);\
+  doc.rect(0, 0, W, 3, 'F');\
+\
+  y = 60;\
+  doc.setFontSize(38); doc.setFont('helvetica','bold');\
+  doc.setTextColor(255,255,255);\
+  doc.text('CompTIA A+', W/2, y, \{ align: 'center' \});\
+  y += 16;\
+  doc.setFontSize(20); doc.setTextColor(79,142,247);\
+  doc.text('Core 1 (220-1101)', W/2, y, \{ align: 'center' \});\
+  y += 10;\
+  doc.setFontSize(13); doc.setTextColor(180,200,220);\
+  doc.text('Practice Exam \'97 Full Answer Explanations', W/2, y, \{ align: 'center' \});\
+\
+  y += 24;\
+  // info box\
+  doc.setFillColor(20, 28, 48);\
+  doc.roundedRect(margin, y, contentW, 40, 3, 3, 'F');\
+  doc.setFontSize(10); doc.setFont('helvetica','normal'); doc.setTextColor(150,170,200);\
+  const infoLines = [\
+    `Score: $\{scorePct\}%  ($\{correct\} / $\{questions.length\} correct)`,\
+    `Status: $\{scorePct >= 70 ? 'PASS \uc0\u10003 ' : 'NOT PASSING \u10007 '\}  |  Passing threshold: 70%`,\
+    `Questions: $\{questions.length\}  |  Domains: Hardware, Networking, Mobile, Cloud, Troubleshooting`,\
+    `Generated: $\{new Date().toLocaleDateString('en-US', \{year:'numeric',month:'long',day:'numeric'\})\}`\
+  ];\
+  infoLines.forEach((line, li) => \{\
+    doc.text(line, margin + 8, y + 9 + li * 7);\
+  \});\
+\
+  // \uc0\u9472 \u9472  Questions \u9472 \u9472 \
+  doc.addPage();\
+  y = 20;\
+  // header bar\
+  doc.setFillColor(79,142,247);\
+  doc.rect(0, 0, W, 2, 'F');\
+\
+  questions.forEach((q, i) => \{\
+    checkY(40);\
+\
+    // Question number + domain pill\
+    doc.setFillColor(20, 28, 48);\
+    doc.roundedRect(margin, y, contentW, 8, 2, 2, 'F');\
+    doc.setFontSize(8); doc.setFont('helvetica','bold');\
+    doc.setTextColor(79,142,247);\
+    doc.text(`Q$\{String(i+1).padStart(2,'0')\}`, margin+4, y+5.5);\
+    doc.setTextColor(100,120,150);\
+    doc.text(q.domain, margin+20, y+5.5);\
+\
+    // Pass/fail indicator\
+    const card = document.getElementById(`card-$\{i\}`);\
+    const isC  = card && card.classList.contains('correct');\
+    doc.setTextColor(isC ? 52 : 248, isC ? 211 : 113, isC ? 153 : 113);\
+    doc.text(isC ? '\uc0\u10003  CORRECT' : '\u10007  WRONG', W - margin - 4, y+5.5, \{align:'right'\});\
+    y += 12;\
+\
+    // Question text\
+    doc.setFontSize(10); doc.setFont('helvetica','bold'); doc.setTextColor(230,235,245);\
+    const qLines = doc.splitTextToSize(q.question, contentW);\
+    checkY(qLines.length * 5 + 4);\
+    doc.text(qLines, margin, y);\
+    y += qLines.length * 5 + 5;\
+\
+    // Options\
+    q.options.forEach((opt, oi) => \{\
+      checkY(8);\
+      const isCorrectOpt = oi === q.answer;\
+      if (isCorrectOpt) \{\
+        doc.setFillColor(20, 60, 40);\
+        doc.roundedRect(margin, y-4, contentW, 7, 1.5, 1.5, 'F');\
+        doc.setDrawColor(52,211,153); doc.setLineWidth(0.3);\
+        doc.roundedRect(margin, y-4, contentW, 7, 1.5, 1.5, 'S');\
+      \}\
+      doc.setFontSize(9);\
+      doc.setFont('helvetica', isCorrectOpt ? 'bold' : 'normal');\
+      doc.setTextColor(isCorrectOpt ? 52 : 150, isCorrectOpt ? 211 : 165, isCorrectOpt ? 153 : 185);\
+      doc.text(`$\{LETTERS[oi]\}.`, margin+3, y+0.5);\
+      doc.setTextColor(isCorrectOpt ? 200 : 160, isCorrectOpt ? 240 : 175, isCorrectOpt ? 210 : 195);\
+      const oLines = doc.splitTextToSize(opt, contentW - 14);\
+      doc.text(oLines, margin+10, y+0.5);\
+      y += oLines.length * 4.5 + 2;\
+    \});\
+\
+    y += 3;\
+    checkY(25);\
+\
+    // Explanation box\
+    doc.setFillColor(12, 22, 40);\
+    const expLines = doc.splitTextToSize(q.explanation, contentW - 12);\
+    const expH = expLines.length * 4.5 + 10;\
+    checkY(expH + 4);\
+    doc.roundedRect(margin, y, contentW, expH, 2, 2, 'F');\
+    doc.setFillColor(79,142,247);\
+    doc.roundedRect(margin, y, 2.5, expH, 1, 1, 'F');\
+    doc.setFontSize(7); doc.setFont('helvetica','bold'); doc.setTextColor(79,142,247);\
+    doc.text('EXPLANATION', margin+6, y+5);\
+    doc.setFontSize(9); doc.setFont('helvetica','normal'); doc.setTextColor(140,170,200);\
+    doc.text(expLines, margin+6, y+10);\
+    y += expH + 14;\
+  \});\
+\
+  // \uc0\u9472 \u9472  Summary page \u9472 \u9472 \
+  doc.addPage();\
+  y = 20;\
+  doc.setFillColor(79,142,247); doc.rect(0,0,W,2,'F');\
+  doc.setFontSize(18); doc.setFont('helvetica','bold'); doc.setTextColor(230,235,245);\
+  doc.text('Performance Summary', margin, y); y += 14;\
+\
+  // Domain table\
+  const domainMap = \{\};\
+  questions.forEach((q, i) => \{\
+    if (!domainMap[q.domain]) domainMap[q.domain] = \{ total:0, correct:0 \};\
+    domainMap[q.domain].total++;\
+    const card = document.getElementById(`card-$\{i\}`);\
+    if (card && card.classList.contains('correct')) domainMap[q.domain].correct++;\
+  \});\
+\
+  doc.setFontSize(9); doc.setFont('helvetica','bold');\
+  doc.setTextColor(79,142,247);\
+  doc.text('DOMAIN', margin, y);\
+  doc.text('SCORE', margin+90, y);\
+  doc.text('RESULT', margin+120, y);\
+  y += 5;\
+  doc.setDrawColor(30,40,64); doc.setLineWidth(0.4);\
+  doc.line(margin, y, W-margin, y); y += 5;\
+\
+  for (const [domain, stats] of Object.entries(domainMap)) \{\
+    checkY(10);\
+    const pct = Math.round((stats.correct/stats.total)*100);\
+    doc.setFont('helvetica','normal'); doc.setTextColor(200,210,230);\
+    doc.text(domain, margin, y);\
+    doc.text(`$\{stats.correct\}/$\{stats.total\} ($\{pct\}%)`, margin+90, y);\
+    const pass = pct >= 70;\
+    doc.setTextColor(pass?52:248, pass?211:113, pass?153:113);\
+    doc.text(pass ? 'PASS' : 'REVIEW', margin+120, y);\
+    y += 7;\
+  \}\
+\
+  y += 8;\
+  doc.setFillColor(20,28,48);\
+  doc.roundedRect(margin, y, contentW, 20, 3, 3, 'F');\
+  doc.setFontSize(14); doc.setFont('helvetica','bold');\
+  doc.setTextColor(scorePct>=70?52:248, scorePct>=70?211:113, scorePct>=70?153:113);\
+  doc.text(`Overall: $\{scorePct\}% \'97 $\{scorePct>=70?'PASS \uc0\u10003 ':'NEEDS MORE STUDY \u10007 '\}`, W/2, y+13, \{align:'center'\});\
+\
+  pdfBlob = doc.output('blob');\
+  return doc;\
+\}\
+\
+// \uc0\u9472 \u9472  Download PDF \u9472 \u9472 \u9472 \u9472 \u9472 \u9472 \u9472 \u9472 \u9472 \u9472 \u9472 \u9472 \u9472 \u9472 \u9472 \u9472 \u9472 \u9472 \u9472 \u9472 \u9472 \u9472 \u9472 \u9472 \u9472 \u9472 \u9472 \u9472 \u9472 \u9472 \u9472 \u9472 \u9472 \u9472 \u9472 \u9472 \u9472 \u9472 \u9472 \u9472 \u9472 \u9472 \u9472 \u9472 \u9472 \u9472 \
+function downloadPDF() \{\
+  if (!pdfBlob) \{\
+    document.getElementById('pdfStatus').textContent = '\uc0\u9203  Please wait, building PDF\'85';\
+    return;\
+  \}\
+  const url = URL.createObjectURL(pdfBlob);\
+  const a   = document.createElement('a');\
+  a.href    = url;\
+  a.download= `CompTIA_A+_Core1_Practice_$\{new Date().toISOString().slice(0,10)\}.pdf`;\
+  a.click();\
+  URL.revokeObjectURL(url);\
+\}\
+</script>\
+\
+</body>\
+</html>}
